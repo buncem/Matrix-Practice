@@ -17,16 +17,29 @@ def matrix_sum(matrix_1, matrix_2):
         answer.append(row)
     return answer
 
+def matrix_multiplication(matrix, constant):
+    answer = []
+    for n in range(len(matrix)):
+        row = [constant * matrix[n][m] for m in range(len(matrix[0]))]
+        answer.append(row)
+    return answer
+
 def print_matrix(matrix):
     for n in range(len(matrix)):
         print(' '.join([str(m) for m in matrix[n]]))
 
-dimensions_1 = dimension_builder()
-matrix_1 = matrix_builder(dimensions_1)
-dimensions_2 = dimension_builder()
-matrix_2 = matrix_builder(dimensions_2)
-if dimensions_1 == dimensions_2:
-    matrix_sum = matrix_sum(matrix_1, matrix_2)
-    print_matrix(matrix_sum)
-else:
-    print('ERROR')
+dimension_1 = dimension_builder()
+matrix = matrix_builder(dimension_1)
+constant = int(input())
+matrix_multiplication = matrix_multiplication(matrix, constant)
+print_matrix(matrix_multiplication)
+
+# dimensions_1 = dimension_builder()
+# matrix_1 = matrix_builder(dimensions_1)
+# dimensions_2 = dimension_builder()
+# matrix_2 = matrix_builder(dimensions_2)
+# if dimensions_1 == dimensions_2:
+#     matrix_sum = matrix_sum(matrix_1, matrix_2)
+#     print_matrix(matrix_sum)
+# else:
+#     print('ERROR')
