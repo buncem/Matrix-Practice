@@ -17,7 +17,7 @@ class Matrix:
         self.num_rows = self.dimensions[0]
         self.num_columns = self.dimensions[1]
 
-    def matrix_builder(self, is_float=False):
+    def matrix_builder(self):
         if self.which_matrix is None:
             print('Enter matrix:')
         else:
@@ -25,10 +25,7 @@ class Matrix:
         matrix = []
         for i in range(self.dimensions[0]):
             row_str = input().split()
-            if is_float:
-                row = [float(n) for n in row_str]
-            else:
-                row = [int(n) for n in row_str]
+            row = [float(n) if '.' in n else int(n) for n in row_str]
             matrix.append(row)
         self.matrix = matrix
 
@@ -47,7 +44,11 @@ class MatrixAction(Matrix):
         self.matrix = answer
 
     def matrix_constant_multiplication(self, matrix):
-        constant = float(input('Enter constant: '))
+        constant_str = input('Enter constant: ')
+        if '.' in constant_str:
+            constant = float(constant_str)
+        else:
+            constant = int(constant_str)
         answer = []
         for n in range(len(matrix.matrix)):
             row = [constant * matrix.matrix[n][m] for m in range(len(matrix.matrix[0]))]
@@ -108,7 +109,7 @@ class Menu:
     def multiply_by_constant(self):
         matrix_1 = Matrix()
         matrix_1.dimension_builder()
-        matrix_1.matrix_builder(is_float=True)
+        matrix_1.matrix_builder()
         matrix_solution = MatrixAction()
         matrix_solution.matrix_constant_multiplication(matrix_1)
         matrix_solution.print_matrix()
