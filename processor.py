@@ -1,6 +1,8 @@
 class Matrix:
     def __init__(self, which_matrix=None):
         self.dimensions = None
+        self.num_rows = None
+        self.num_columns = None
         self.matrix = None
         self.which_matrix = which_matrix
 
@@ -10,6 +12,8 @@ class Matrix:
         else:
             dimensions_str = input(f'Enter size of {self.which_matrix} matrix: ').split()
         self.dimensions = [int(n) for n in dimensions_str]
+        self.num_rows = self.dimensions[0]
+        self.num_columns = self.dimensions[1]
 
     def matrix_builder(self):
         if self.which_matrix is None:
@@ -43,14 +47,36 @@ class MatrixAction(Matrix):
             answer.append(row)
         self.matrix = answer
 
+    def matrix_multiplication(self, matrix_1, matrix_2):
+        answer = []
+        for n in range(matrix_1.num_rows):
+            row = []
+            for k in range(matrix_2.num_columns):
+                element = 0
+                for m in range(matrix_2.num_rows):
+                    element += matrix_1.matrix[n][m] * matrix_2.matrix[m][k]
+                row.append(element)
+            answer.append(row)
+        self.matrix = answer
+
 #class Menu:
 
 matrix_1 = Matrix(which_matrix='first')
 matrix_1.dimension_builder()
 matrix_1.matrix_builder()
+matrix_2 = Matrix(which_matrix='second')
+matrix_2.dimension_builder()
+matrix_2.matrix_builder()
 matrix_solution = MatrixAction()
-matrix_solution.matrix_constant_multiplication(matrix_1)
+matrix_solution.matrix_multiplication(matrix_1, matrix_2)
 matrix_solution.print_matrix()
+
+# matrix_1 = Matrix(which_matrix='first')
+# matrix_1.dimension_builder()
+# matrix_1.matrix_builder()
+# matrix_solution = MatrixAction()
+# matrix_solution.matrix_constant_multiplication(matrix_1)
+# matrix_solution.print_matrix()
 
 # matrix_1 = Matrix(which_matrix='first')
 # matrix_1.dimension_builder()
