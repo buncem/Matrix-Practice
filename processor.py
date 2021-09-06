@@ -67,12 +67,33 @@ class MatrixAction(Matrix):
             answer.append(row)
         self.matrix = answer
 
+    def transpose_main_diagonal(self):
+        answer = [i[:] for i in self.matrix]
+        for n in range(self.num_rows):
+            for m in range(self.num_columns):
+                answer[n][m] = self.matrix[m][n]
+        self.matrix = answer
+
+    def transpose_side_diagonal(self):
+        answer = [i[:] for i in self.matrix]
+        for n in range(self.num_rows):
+            for m in range(self.num_columns):
+                answer[n][m] = self.matrix[-m - 1][-n - 1]
+        self.matrix = answer
+
+    def transpose_vertical_line(self):
+        self.matrix = [i[::-1] for i in self.matrix]
+
+    def transpose_horizontal_line(self):
+        self.matrix = self.matrix[::-1]
+
 class Menu:
     def __init__(self):
         self.choices = {
             "1": self.add_matrices,
             "2": self.multiply_by_constant,
             "3": self.multiply_matrices,
+            "4": self.transpose_matrix,
             "0": self.exit
         }
 
@@ -80,7 +101,15 @@ class Menu:
         print('1. Add matrices')
         print('2. Multiply matrix by a constant')
         print('3. Multiply matrices')
+        print('4. Transpose matrix')
         print('0. Exit')
+
+    def transpose_display_menu(self):
+        print()
+        print('1. Main diagonal')
+        print('2. Side diagonal')
+        print('3. Vertical line')
+        print('4. Horizontal line')
 
     def run(self):
         while True:
@@ -128,35 +157,28 @@ class Menu:
         else:
             print('The operation cannot be performed.\n')
 
+    def transpose_matrix(self):
+        self.transpose_display_menu()
+        user_input = input('Your choice: ').strip()
+        if user_input not in '1234':
+            print('Not a valid choice\n')
+        else:
+            matrix = MatrixAction()
+            matrix.dimension_builder()
+            matrix.matrix_builder()
+            if user_input == '1':
+               matrix.transpose_main_diagonal()
+            elif user_input == '2':
+                matrix.transpose_side_diagonal()
+            elif user_input == '3':
+                matrix.transpose_vertical_line()
+            else:
+                matrix.transpose_horizontal_line()
+            matrix.print_matrix()
+
     def exit(self):
         sys.exit(0)
 
 
 if __name__ == "__main__":
     Menu().run()
-# matrix_1 = Matrix(which_matrix='first')
-# matrix_1.dimension_builder()
-# matrix_1.matrix_builder()
-# matrix_2 = Matrix(which_matrix='second')
-# matrix_2.dimension_builder()
-# matrix_2.matrix_builder()
-# matrix_solution = MatrixAction()
-# matrix_solution.matrix_multiplication(matrix_1, matrix_2)
-# matrix_solution.print_matrix()
-
-# matrix_1 = Matrix(which_matrix='first')
-# matrix_1.dimension_builder()
-# matrix_1.matrix_builder()
-# matrix_solution = MatrixAction()
-# matrix_solution.matrix_constant_multiplication(matrix_1)
-# matrix_solution.print_matrix()
-
-# matrix_1 = Matrix(which_matrix='first')
-# matrix_1.dimension_builder()
-# matrix_1.matrix_builder()
-# matrix_2 = Matrix(which_matrix='second')
-# matrix_2.dimension_builder()
-# matrix_2.matrix_builder()
-# matrix_solution = MatrixAction()
-# matrix_solution.matrix_sum(matrix_1, matrix_2)
-# matrix_solution.print_matrix()
