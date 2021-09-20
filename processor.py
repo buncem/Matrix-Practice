@@ -87,6 +87,25 @@ class MatrixAction(Matrix):
     def transpose_horizontal_line(self):
         self.matrix = self.matrix[::-1]
 
+    def get_determinant(self, matrix_1):
+        if matrix_1.num_rows == 1:
+            return matrix_1.matrix[0][0]
+        elif matrix_1.num_rows == 2:
+            return matrix_1.matrix[0][0] * matrix_1.matrix[1][1] - matrix_1.matrix[1][0] * matrix_1.matrix[0][1]
+        else:
+            determinant = 0
+            for j in range(matrix_1.num_columns):
+                cofactor = (-1) ** (j) * matrix_1.matrix[0][j]
+                minor = Matrix()
+                minor.matrix = [matrix_1.matrix[i][:j] + matrix_1.matrix[i][j + 1:] for i in range(matrix_1.num_rows) if i != 0]
+                minor.num_rows = len(minor.matrix)
+                minor.num_columns = len(minor.matrix[0])
+                minor.dimensions = [minor.num_rows, minor.num_columns]
+                determinant += cofactor * self.get_determinant(minor)
+            return determinant
+
+
+
 class Menu:
     def __init__(self):
         self.choices = {
@@ -94,6 +113,7 @@ class Menu:
             "2": self.multiply_by_constant,
             "3": self.multiply_matrices,
             "4": self.transpose_matrix,
+            "5": self.calculate_determinant,
             "0": self.exit
         }
 
@@ -102,6 +122,7 @@ class Menu:
         print('2. Multiply matrix by a constant')
         print('3. Multiply matrices')
         print('4. Transpose matrix')
+        print('5. Calculate a determinant')
         print('0. Exit')
 
     def transpose_display_menu(self):
@@ -175,6 +196,14 @@ class Menu:
             else:
                 matrix.transpose_horizontal_line()
             matrix.print_matrix()
+
+    def calculate_determinant(self):
+        matrix = Matrix()
+        matrix.dimension_builder()
+        matrix.matrix_builder()
+        print('The result is:')
+        print(MatrixAction().get_determinant(matrix))
+        print()
 
     def exit(self):
         sys.exit(0)
