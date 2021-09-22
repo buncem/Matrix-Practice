@@ -43,12 +43,7 @@ class MatrixAction(Matrix):
             answer.append(row)
         self.matrix = answer
 
-    def matrix_constant_multiplication(self, matrix):
-        constant_str = input('Enter constant: ')
-        if '.' in constant_str:
-            constant = float(constant_str)
-        else:
-            constant = int(constant_str)
+    def matrix_constant_multiplication(self, matrix, constant):
         answer = []
         for n in range(len(matrix.matrix)):
             row = [constant * matrix.matrix[n][m] for m in range(len(matrix.matrix[0]))]
@@ -104,7 +99,20 @@ class MatrixAction(Matrix):
                 determinant += cofactor * self.get_determinant(minor)
             return determinant
 
-
+    def get_cofactor_matrix(self, matrix_1):
+        if matrix_1.num_rows == 1:
+            return [[1]]
+        else:
+            answer = [i[:] for i in matrix_1.matrix]
+            for i in range(matrix_1.num_rows):
+                for j in range(matrix_1.num_columns):
+                    minor = Matrix()
+                    minor.matrix = [matrix_1.matrix[k][:j] + matrix_1.matrix[k][j + 1:] for k in range(matrix_1.num_rows) if k != i]
+                    minor.num_rows = len(minor.matrix)
+                    minor.num_columns = len(minor.matrix[0])
+                    minor.dimensions = [minor.num_rows, minor.num_columns]
+                    answer[i][j] = (-1) ** (i + j) * self.get_determinant(minor)
+            return answer
 
 class Menu:
     def __init__(self):
@@ -114,6 +122,7 @@ class Menu:
             "3": self.multiply_matrices,
             "4": self.transpose_matrix,
             "5": self.calculate_determinant,
+            "6": self.calculate_inverse,
             "0": self.exit
         }
 
@@ -123,6 +132,7 @@ class Menu:
         print('3. Multiply matrices')
         print('4. Transpose matrix')
         print('5. Calculate a determinant')
+        print('6. Inverse matrix')
         print('0. Exit')
 
     def transpose_display_menu(self):
@@ -160,8 +170,13 @@ class Menu:
         matrix_1 = Matrix()
         matrix_1.dimension_builder()
         matrix_1.matrix_builder()
+        constant_str = input('Enter constant: ')
+        if '.' in constant_str:
+            constant = float(constant_str)
+        else:
+            constant = int(constant_str)
         matrix_solution = MatrixAction()
-        matrix_solution.matrix_constant_multiplication(matrix_1)
+        matrix_solution.matrix_constant_multiplication(matrix_1, constant)
         matrix_solution.print_matrix()
 
     def multiply_matrices(self):
@@ -204,6 +219,24 @@ class Menu:
         print('The result is:')
         print(MatrixAction().get_determinant(matrix))
         print()
+
+    def calculate_inverse(self):
+        matrix = Matrix()
+        matrix.dimension_builder()
+        matrix.matrix_builder()
+        determinant = MatrixAction().get_determinant(matrix)
+        if determinant == 0:
+            print("This matrix doesn't have an inverse.\n")
+        else:
+            cofactor_matrix = MatrixAction().get_cofactor_matrix(matrix)
+            inverse_matrix = MatrixAction()
+            inverse_matrix.matrix = cofactor_matrix
+            inverse_matrix.num_rows = len(inverse_matrix.matrix)
+            inverse_matrix.num_columns = len(inverse_matrix.matrix[0])
+            inverse_matrix.dimensions = [inverse_matrix.num_rows, inverse_matrix.num_columns]
+            inverse_matrix.transpose_main_diagonal()
+            inverse_matrix.matrix_constant_multiplication(inverse_matrix, 1 / determinant)
+            inverse_matrix.print_matrix()
 
     def exit(self):
         sys.exit(0)
